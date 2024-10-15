@@ -1,28 +1,22 @@
-// import {useState} from 'react'
-// import '../style/info.css'
-// /**
-//  * simple react component that gets character name and realm from input fields and stores in state
-//  * @function getPlayerInfo
-//  * @returns {React.JSX.Element}
-//  */
-// export function Info(){
-//     const [name, setName] = useState(undefined)
-//     const [realm, setRealm] = useState(undefined)
-//     const getData = () => {
-//         const data = {
-//             charname: name,
-//             realm: realm
-//         }
+import {useState} from 'react'
 
-//         console.log(data)
-//         return data // send this data to server
-//     }
-
-//     return(
-//         <div className='info-field'>
-//             <input className='name-field' id='charname' onChange={(e)=>{setName(e.target.value)}}/>
-//             <input className='realm-field' id='realm' onChange={(e)=>{setRealm(e.target.value)}}/>
-//             <button className='submit-button' id='submit' onClick={getData}>submit</button>
-//         </div>
-//     )
-// }
+export default function Info({users, setUsers}){
+    const [charName, setCharName] = useState(undefined)
+    const [realm, setRealm] = useState(undefined)
+    const getData = async () => {
+        const response = await fetch(`http://localhost:8080?realm=${realm}&charname=${charName}`, {
+          method: 'GET',
+        })
+        const data = await response.json()
+        const {name, active_spec_name, mythic_plus_scores_by_season} = data;
+        const c = data.class;
+       setUsers([...users, {"name": name, "class": c,  "active_spec_name": active_spec_name, "mythic_scores": mythic_plus_scores_by_season[0].scores.all}]);
+    }
+    return(
+        <div className='info-field'>
+            <input className='name-field' id='charname' placeholder="name" onChange={(e)=>{setCharName(e.target.value)}}/>
+            <input className='realm-field' id='realm' placeholder="realm" onChange={(e)=>{setRealm(e.target.value)}}/>
+            <button className='submit-button' id='submit' onClick={getData}>submit</button>
+        </div>
+    )
+}
