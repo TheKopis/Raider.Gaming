@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Frontend
 
 on:
   push:
@@ -7,37 +7,44 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build Frontend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 18
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        run: |
+          cd Raider.Gaming
+          npm install
 
       - name: Build project
-        run: npm run build
+        run: |
+          cd Raider.Gaming
+          npm run build
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
         with:
           name: production-files
-          path: ./dist
+          path: Raider.Gaming/dist
 
   deploy:
-    name: Deploy
+    name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
