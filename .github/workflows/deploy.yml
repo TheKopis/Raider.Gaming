@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build Frontend
     runs-on: ubuntu-latest
+    environment: # Environment for the build step (optional)
+      name: build-environment
+      url: ${{ steps.deployment.outputs.page_url }} # If you want to set an environment URL
 
     steps:
       - name: Checkout repo
@@ -39,7 +42,9 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    environment: # Environment for deployment to GitHub Pages
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # Will be automatically set by GitHub Pages
 
     steps:
       - name: Checkout repo
