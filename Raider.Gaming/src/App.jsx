@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import Info from './components/Info';
+import Info from './components/info';
 import Leaderboard from './components/Leaderboard';
 import './style/App.css';
 import './style/info.css'
